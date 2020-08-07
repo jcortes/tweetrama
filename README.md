@@ -1,9 +1,9 @@
-# Client
-## Setup
-```
-$ elm install
-```
+# Requirements
+* Linux System 🙏
+* NPM
+* ELM
 
+# Client
 ## Run
 ```
 $ elm reactor
