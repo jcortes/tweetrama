@@ -1,7 +1,7 @@
 # Requirements
 * Linux System 🙏
 * NPM
-* ELM
+* ELM (https://github.com/elm/compiler/blob/master/installers/linux/README.md)
 
 # Client
 ## Run
