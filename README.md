@@ -1,4 +1,18 @@
-# Setup
+# Client
+## Setup
+```
+$ elm install
+```
+
+## Run
+```
+$ elm reactor
+```
+
+Then go to `http://localhost:8000/src/Main.elm`
+
+# Server
+## Setup
 Save this to `./server/.env` file
 ```
 export CONSUMER_KEY=<key>
@@ -12,9 +26,11 @@ The source it like this:
 $ source .env
 ```
 
-# Run Server
+## Run
 ```
 $ cd server
 $ npm i
 $ npm run start
 ```
+
+Then go to `http://localhost:8002/test/matarife`
