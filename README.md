@@ -1,3 +1,6 @@
+# Prerequisites
+* Elm (https://github.com/elm/compiler/blob/master/installers/linux/README.md)
+
 # Client
 ## Setup
 ```
