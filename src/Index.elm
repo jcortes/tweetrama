@@ -13,19 +13,22 @@ type alias Model = { content : String }
 init: Model
 init = { content = "" }
 
-type Msg = Search String
+type Msg = UserInput String
+  | Search String
 
 update: Msg -> Model -> Model
 update msg model =
   case msg of
-    Search newContent ->
+    UserInput newContent ->
       { model | content = newContent }
+    Search newContent ->
+      { model | content = "Requesting Matarife ..." }
 
 view : Model -> Html Msg
 view model =
   div [id "main"]
     [ form [ id "main-form", onSubmit (Search model.content) ]
-      [ input [ value model.content, onInput Search ] []
+      [ input [ value model.content, onInput UserInput ] []
       , button [ type_ "submit" ] [ text "Search" ]
       ]
     ]
