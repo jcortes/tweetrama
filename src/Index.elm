@@ -1,28 +1,32 @@
-module Index exposing (..)
+module Index exposing (Model)
 
 import Browser
-import Html exposing (Html, Attribute, div, input, text)
-import Html.Attributes exposing (..)
-import Html.Events exposing (onSubmit)
+import Html exposing (Html, form, div, input, text, button)
+import Html.Attributes exposing (id, value, type_)
+import Html.Events exposing (onSubmit, onInput)
 
 main =
   Browser.sandbox { init = init, update = update, view = view }
 
-type alias Model = { searchText : String }
+type alias Model = { content : String }
 
 init: Model
-init = { searchText = "" }
+init = { content = "" }
 
-type Msg = Submit String
+type Msg = Search String
 
 update: Msg -> Model -> Model
 update msg model =
   case msg of
-    Submit newSearhText -> { model | searchText = newSearhText }
+    Search newContent ->
+      { model | content = newContent }
 
 view : Model -> Html Msg
 view model =
-  div []
-    [ input [ placeholder "Search", value model.searchText ] []
+  div [id "main"]
+    [ form [ id "main-form", onSubmit (Search model.content) ]
+      [ input [ value model.content, onInput Search ] []
+      , button [ type_ "submit" ] [ text "Search" ]
+      ]
     ]
 
