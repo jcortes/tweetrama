@@ -1,4 +1,4 @@
-module Index exposing (Model)
+module Index exposing (..)
 
 import Browser
 import Html exposing (Html, form, div, input, text, button)
@@ -10,19 +10,26 @@ import Json.Decode as Decode exposing (Decoder, field, string)
 import Json.Encode as Encode exposing (encode, list)
 
 main =
-  Browser.element { init = init, update = update, view = view }
+  Browser.element
+    { init = init
+    , subscriptions = subscriptions
+    , update = update
+    , view = view
+    }
 
-type alias Model = { content : String, tweets : List String }
-type Model = Failing
-  | Loading
-  | Sucess (List String)
+-- SUBSCRIPTIONS
+subscriptions : Model -> Sub Msg
+subscriptions model = Sub.none
 
-type alias ResponseRecord = { statuses : List String }
+type alias TweetsModel = 
+  { content : String
+  , tweets : List String
+  }
 
+type Model = FormSuccess TweetsModel
 
 init: () -> (Model, Cmd Msg)
--- init = { content = "", tweets = [] }
-init = ( , Cmd.none )
+init _ = (FormSuccess { content = "", tweets = [] }, Cmd.none)
 
 type Msg = UserInput String
   | Search String
@@ -32,34 +39,51 @@ update: Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     UserInput newContent ->
-      ( { model | content = newContent }, Cmd.none )
+      case model of
+        FormSuccess tweetsModel ->
+          ( FormSuccess { tweetsModel | content = newContent }, Cmd.none )
+
     Search newContent ->
-      ( model, getTweets )
+      case model of
+        FormSuccess tweetsModel ->
+          ( FormSuccess { tweetsModel | content = newContent }, getTweets newContent )
 
     GotTweets result ->
       case result of
         Ok tweetsResponse ->
-          ( { model | tweets = tweetsResponse }, Cmd.none )
+          case model of
+            FormSuccess tweetsModel ->
+              ( FormSuccess { tweetsModel | tweets = tweetsResponse }, Cmd.none )
+
         Err _ ->
-          ( model, Cmd.none )
+          case model of
+            FormSuccess tweetsModel ->
+              ( FormSuccess tweetsModel, Cmd.none )
 
 view : Model -> Html Msg
 view model =
   div [id "main"]
-    [ form [ id "main-form", onSubmit (Search model.content) ]
-      [ input [ value model.content, onInput UserInput ] []
-      , button [ type_ "submit" ] [ text "Search" ]
-      ]
-      , div [] []
-      , text (encode 0 (Encode.list Encode.string model.tweets))
+    [ viewTweetsForm model
     ]
 
+viewTweetsForm : Model -> Html Msg
+viewTweetsForm model =
+  case model of
+    FormSuccess tweetsModel ->
+      div [] [
+        form [ id "main-form", onSubmit (Search tweetsModel.content) ]
+        [ input [ value tweetsModel.content, onInput UserInput ] []
+        , button [ type_ "submit" ] [ text "Search" ]
+        ]
+        , div [] []
+        , text (encode 0 (Encode.list Encode.string tweetsModel.tweets))
+      ]
+    
 -- HTTP
-
-getTweets : Cmd Msg
-getTweets =
+getTweets : String -> Cmd Msg
+getTweets content =
   Http.get
-    { url = "http://localhost:8002/test/" ++ "matarife"
+    { url = "http://localhost:8002/test/" ++ content
     , expect = Http.expectJson GotTweets tweetsDecoder
     }
 
