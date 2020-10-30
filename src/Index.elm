@@ -9,7 +9,7 @@ import Update exposing (update)
 import View exposing (view)
 
 init: () -> ( State, Cmd Msg )
-init _ = ( { content = "", tweets = [] }, Cmd.none )
+init _ = ( { content = "", since = "", until = "", tweets = [] }, Cmd.none )
 
 main =
   Browser.element

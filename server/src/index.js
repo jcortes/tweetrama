@@ -11,9 +11,15 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-app.get("/test/:text", (req, res) => {
-  const { text } = req.params;  
-  const params = { q: text, count: 100 };
+app.post("/test/:query", (req, res) => {
+  const { query } = req.params;
+  // from:jacortesmahmud namaskaram until:2020-10-28 since:2020-10-25 -filter:replies
+  const user = "from:jacortesmahmud";
+  const q = `${user}${text}`;
+
+  console.log('QUERY!!!', q);
+
+  const params = { q, count: 100 };
   twitter.get(SEARCH_TWEETS_PATH, params, (error, tweets, response) => {
     res.send(tweets);
   });
